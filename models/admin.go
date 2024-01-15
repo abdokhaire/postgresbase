@@ -2,9 +2,11 @@ package models
 
 import (
 	"errors"
+	"os"
+	"strconv"
 
-	"github.com/pocketbase/pocketbase/tools/security"
-	"github.com/pocketbase/pocketbase/tools/types"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/security"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -47,8 +49,20 @@ func (m *Admin) SetPassword(password string) error {
 		return errors.New("The provided plain password is empty")
 	}
 
+	// !CHANGED: bcrypt salt amount is increased from 10 to 12 (old ersion: 10). Get it from env var
+	// get cost from env
+	cost := 12
+	costArg := os.Getenv("BCRYPT_COST")
+	if costArg != "" {
+		costAi, err := strconv.Atoi(costArg)
+		if err != nil {
+			return errors.New("The provided BCRYPT_COST is not a valid number")
+		}
+		cost = costAi
+	}
+
 	// hash the password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 12)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), cost)
 	if err != nil {
 		return err
 	}

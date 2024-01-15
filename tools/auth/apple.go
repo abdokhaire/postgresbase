@@ -12,8 +12,8 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/pocketbase/pocketbase/tools/types"
 	"github.com/spf13/cast"
 	"golang.org/x/oauth2"
 )

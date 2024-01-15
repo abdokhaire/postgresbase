@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/daos"
-	"github.com/pocketbase/pocketbase/models"
 )
 
 // CollectionsImport is a form model to bulk import

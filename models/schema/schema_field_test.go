@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/models/schema"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
-	"github.com/pocketbase/pocketbase/models/schema"
-	"github.com/pocketbase/pocketbase/tools/types"
 )
 
 func TestBaseModelFieldNames(t *testing.T) {
@@ -335,11 +335,11 @@ func TestSchemaFieldValidate(t *testing.T) {
 			[]string{"name"},
 		},
 		{
-			"reserved name (_rowid_)",
+			"reserved name (_ctid_)", // !CHANGED: Change rowid to ctid to avoid postgress conflict
 			schema.SchemaField{
 				Type: schema.FieldTypeText,
 				Id:   "1234567890",
-				Name: "_rowid_",
+				Name: "_ctid_",
 			},
 			[]string{"name"},
 		},

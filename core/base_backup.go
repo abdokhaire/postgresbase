@@ -12,14 +12,14 @@ import (
 	"sort"
 	"time"
 
-	"github.com/pocketbase/pocketbase/daos"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/tools/archive"
-	"github.com/pocketbase/pocketbase/tools/cron"
-	"github.com/pocketbase/pocketbase/tools/filesystem"
-	"github.com/pocketbase/pocketbase/tools/inflector"
-	"github.com/pocketbase/pocketbase/tools/osutils"
-	"github.com/pocketbase/pocketbase/tools/security"
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/archive"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/cron"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/filesystem"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/inflector"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/osutils"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/security"
 )
 
 // Deprecated: Replaced with StoreKeyActiveBackup.
@@ -72,11 +72,9 @@ func (app *BaseApp) CreateBackup(ctx context.Context, name string) error {
 	// Run in transaction to temporary block other writes (transactions uses the NonconcurrentDB connection).
 	// ---
 	tempPath := filepath.Join(localTempDir, "pb_backup_"+security.PseudorandomString(4))
-	createErr := app.Dao().RunInTransaction(func(dataTXDao *daos.Dao) error {
-		return app.LogsDao().RunInTransaction(func(logsTXDao *daos.Dao) error {
-			// @todo consider experimenting with temp switching the readonly pragma after the db interface change
-			return archive.Create(app.DataDir(), tempPath, exclude...)
-		})
+	createErr := app.Dao().RunInTransaction(func(txDao *daos.Dao) error {
+		// @todo consider experimenting with temp switching the readonly pragma after the db interface change
+		return archive.Create(app.DataDir(), tempPath, exclude...)
 	})
 	if createErr != nil {
 		return createErr

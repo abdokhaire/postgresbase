@@ -1,12 +1,12 @@
 package forms
 
 import (
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
+	"github.com/AlperRehaYAZGAN/postgresbase/mails"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/models/schema"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/mails"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/models/schema"
 )
 
 const (

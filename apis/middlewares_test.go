@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/apis"
+	"github.com/AlperRehaYAZGAN/postgresbase/tests"
 	"github.com/labstack/echo/v5"
-	"github.com/pocketbase/pocketbase/apis"
-	"github.com/pocketbase/pocketbase/tests"
 )
 
 func TestRequireGuestOnly(t *testing.T) {

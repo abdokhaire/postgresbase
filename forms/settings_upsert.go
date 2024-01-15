@@ -4,12 +4,12 @@ import (
 	"os"
 	"time"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/models/settings"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/daos"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/models/settings"
-	"github.com/pocketbase/pocketbase/tools/types"
 )
 
 // SettingsUpsert is a [settings.Settings] upsert (create/update) form.

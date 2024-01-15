@@ -1,10 +1,10 @@
 package migrations
 
 import (
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/models/schema"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/daos"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/models/schema"
 )
 
 // Update all collections with json fields to have a default MaxSize json field option.

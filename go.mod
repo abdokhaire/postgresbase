@@ -1,4 +1,4 @@
-module github.com/pocketbase/pocketbase
+module github.com/AlperRehaYAZGAN/postgresbase
 
 go 1.22.0
 
@@ -20,8 +20,11 @@ require (
 	github.com/ganigeorgiev/fexpr v0.4.1
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0
 	github.com/goccy/go-json v0.10.3
+	github.com/godruoyi/go-snowflake v0.0.2
 	github.com/golang-jwt/jwt/v4 v4.5.0
+	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v5 v5.0.0-20230722203903-ec5b858dab61
+	github.com/lib/pq v1.10.9
 	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/pocketbase/dbx v1.10.1
 	github.com/pocketbase/tygoja v0.0.0-20241015175937-d6ff411a0f75
@@ -53,6 +56,7 @@ require (
 	github.com/dlclark/regexp2 v1.11.4 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/go-sourcemap/sourcemap v2.1.4+incompatible // indirect
+	github.com/godruoyi/go-snowflake v0.0.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/google/pprof v0.0.0-20240827171923-fa2c70bbbfe5 // indirect
 	github.com/google/uuid v1.6.0 // indirect

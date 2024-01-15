@@ -8,10 +8,10 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/cmd"
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/list"
 	"github.com/fatih/color"
-	"github.com/pocketbase/pocketbase/cmd"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/tools/list"
 	"github.com/spf13/cobra"
 )
 
@@ -147,6 +147,31 @@ func (pb *PocketBase) Start() error {
 // This method differs from pb.Start() by not registering the default
 // system commands!
 func (pb *PocketBase) Execute() error {
+
+	var (
+		// path to all environmental files (or locations with .env file)
+		// filled from flag values
+		envs []string
+	)
+
+	// Environmental variables (from the env, files, see cli.LoadEnv) MUST be
+	// loaded at this point!
+	if len(envs) == 0 {
+		envs = []string{"."}
+	}
+
+	// Loading env after the rootcommand is added, so as not to break
+	// the Execute() if there is an error
+	if err := cmd.LoadEnv(envs...); err != nil {
+		return err
+	}
+
+	pb.RootCmd.Flags().StringSliceVar(&envs, "env-file", nil,
+		"Load environmental variables from files and directories containing .env file.\n"+
+			"Values from loaded files DO NOT override existing variables from the environment.\n"+
+			"This flag can be used multiple times, values are loaded from all provided locations.\n"+
+			"If no paths are provided, corteza loads .env file from the current directory (equivalent to --env-file .)")
+
 	if !pb.skipBootstrap() {
 		if err := pb.Bootstrap(); err != nil {
 			return err

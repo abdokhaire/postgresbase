@@ -4,7 +4,10 @@ import (
 	cryptoRand "crypto/rand"
 	"math/big"
 	mathRand "math/rand"
+	"strconv"
 	"time"
+
+	"github.com/godruoyi/go-snowflake"
 )
 
 const defaultRandomAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
@@ -37,6 +40,14 @@ func RandomStringWithAlphabet(length int, alphabet string) string {
 	}
 
 	return string(b)
+}
+
+// RandomSnowflakeId generates a snowflake id.
+//
+// The generated id is a string like "1537200202186752" 16-20 characters length.
+func RandomSnowflakeId() string {
+	id := snowflake.ID()
+	return strconv.FormatUint(id, 10)
 }
 
 // PseudorandomString generates a pseudorandom string with the specified length.

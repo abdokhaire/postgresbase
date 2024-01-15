@@ -3,10 +3,10 @@ package models
 import (
 	"encoding/json"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/models/schema"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
-	"github.com/pocketbase/pocketbase/models/schema"
-	"github.com/pocketbase/pocketbase/tools/types"
 )
 
 var (

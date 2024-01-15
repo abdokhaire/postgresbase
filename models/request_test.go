@@ -3,7 +3,7 @@ package models_test
 import (
 	"testing"
 
-	"github.com/pocketbase/pocketbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
 )
 
 func TestRequestTableName(t *testing.T) {

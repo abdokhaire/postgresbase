@@ -7,13 +7,13 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/auth"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/cron"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/mailer"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/rest"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/security"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
-	"github.com/pocketbase/pocketbase/tools/auth"
-	"github.com/pocketbase/pocketbase/tools/cron"
-	"github.com/pocketbase/pocketbase/tools/mailer"
-	"github.com/pocketbase/pocketbase/tools/rest"
-	"github.com/pocketbase/pocketbase/tools/security"
 )
 
 // SecretMask is the default settings secrets replacement value

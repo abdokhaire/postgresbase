@@ -15,7 +15,7 @@ func init() {
 		}
 
 		// add new userIp column
-		if _, err := db.AddColumn("_requests", "userIp", `TEXT DEFAULT "127.0.0.1" NOT NULL`).Execute(); err != nil {
+		if _, err := db.AddColumn("_requests", "userIp", `TEXT DEFAULT '127.0.0.1' NOT NULL`).Execute(); err != nil {
 			return err
 		}
 

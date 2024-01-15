@@ -1,4 +1,4 @@
-/.vscode/
+/.vscode/*
 .idea
 
 .DS_Store
@@ -16,3 +16,17 @@ coverage.out
 README.html
 CHANGELOG.html
 LICENSE.html
+
+# application specific ignores and go build outputs
+volumes/*
+pb_migrations/*
+pb_data/*
+server
+*.exe
+keys/*
+.env
+
+#includes
+!.vscode/launch.json
+!**/migrations/logs/
+!.env.example

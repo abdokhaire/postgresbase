@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/pocketbase/pocketbase/tools/rest"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/rest"
 )
 
 func TestFindUploadedFiles(t *testing.T) {

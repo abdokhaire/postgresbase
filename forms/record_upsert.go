@@ -9,18 +9,18 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
+	"github.com/AlperRehaYAZGAN/postgresbase/forms/validators"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/models/schema"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/filesystem"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/list"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/rest"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/security"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/daos"
-	"github.com/pocketbase/pocketbase/forms/validators"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/models/schema"
-	"github.com/pocketbase/pocketbase/tools/filesystem"
-	"github.com/pocketbase/pocketbase/tools/list"
-	"github.com/pocketbase/pocketbase/tools/rest"
-	"github.com/pocketbase/pocketbase/tools/security"
 	"github.com/spf13/cast"
 )
 
@@ -476,7 +476,8 @@ func (form *RecordUpsert) Validate() error {
 			&form.Id,
 			validation.When(
 				form.record.IsNew(),
-				validation.Length(models.DefaultIdLength, models.DefaultIdLength),
+				// !CHANGED: replace default id validations to Snowflak
+				validation.Length(models.SnowflakeMinLen, models.SnowflakeMaxLen),
 				validation.Match(idRegex),
 				validation.By(validators.UniqueId(form.dao, form.record.TableName())),
 			).Else(validation.In(form.record.Id)),

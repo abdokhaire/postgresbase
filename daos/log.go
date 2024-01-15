@@ -3,9 +3,9 @@ package daos
 import (
 	"time"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/tools/types"
 )
 
 // LogQuery returns a new Log select query.
@@ -39,7 +39,8 @@ func (dao *Dao) LogsStats(expr dbx.Expression) ([]*LogsStatsItem, error) {
 	result := []*LogsStatsItem{}
 
 	query := dao.LogQuery().
-		Select("count(id) as total", "strftime('%Y-%m-%d %H:00:00', created) as date").
+		// !CHANGED: to support postgress standard date
+		Select("count(id) as total", "created as date").
 		GroupBy("date")
 
 	if expr != nil {

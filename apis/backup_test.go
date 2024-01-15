@@ -10,9 +10,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
+	"github.com/AlperRehaYAZGAN/postgresbase/tests"
 	"github.com/labstack/echo/v5"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/tests"
 	"gocloud.dev/blob"
 )
 

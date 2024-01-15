@@ -15,29 +15,29 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/apis"
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
+	"github.com/AlperRehaYAZGAN/postgresbase/forms"
+	"github.com/AlperRehaYAZGAN/postgresbase/mails"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/models/schema"
+	"github.com/AlperRehaYAZGAN/postgresbase/tokens"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/cron"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/filesystem"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/hook"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/inflector"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/list"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/mailer"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/rest"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/security"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/subscriptions"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 	"github.com/dop251/goja"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/apis"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/daos"
-	"github.com/pocketbase/pocketbase/forms"
-	"github.com/pocketbase/pocketbase/mails"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/models/schema"
-	"github.com/pocketbase/pocketbase/tokens"
-	"github.com/pocketbase/pocketbase/tools/cron"
-	"github.com/pocketbase/pocketbase/tools/filesystem"
-	"github.com/pocketbase/pocketbase/tools/hook"
-	"github.com/pocketbase/pocketbase/tools/inflector"
-	"github.com/pocketbase/pocketbase/tools/list"
-	"github.com/pocketbase/pocketbase/tools/mailer"
-	"github.com/pocketbase/pocketbase/tools/rest"
-	"github.com/pocketbase/pocketbase/tools/security"
-	"github.com/pocketbase/pocketbase/tools/subscriptions"
-	"github.com/pocketbase/pocketbase/tools/types"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 )
@@ -299,34 +299,6 @@ func baseBinds(vm *goja.Runtime) {
 		}
 
 		return string(bodyBytes), nil
-	})
-
-	vm.Set("toString", func(raw any, maxReaderBytes int) (string, error) {
-		switch v := raw.(type) {
-		case io.Reader:
-			if maxReaderBytes == 0 {
-				maxReaderBytes = rest.DefaultMaxMemory
-			}
-
-			limitReader := io.LimitReader(v, int64(maxReaderBytes))
-
-			bodyBytes, readErr := io.ReadAll(limitReader)
-			if readErr != nil {
-				return "", readErr
-			}
-
-			return string(bodyBytes), nil
-		default:
-			str, err := cast.ToStringE(v)
-			if err == nil {
-				return str, nil
-			}
-
-			// as a last attempt try to json encode the value
-			rawBytes, _ := json.Marshal(raw)
-
-			return string(rawBytes), nil
-		}
 	})
 
 	vm.Set("sleep", func(milliseconds int64) {

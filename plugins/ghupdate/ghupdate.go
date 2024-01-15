@@ -21,9 +21,9 @@ import (
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/archive"
 	"github.com/fatih/color"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/tools/archive"
 	"github.com/spf13/cobra"
 )
 
@@ -161,11 +161,6 @@ func (p *plugin) update(withBackup bool) error {
 
 	if compareVersions(strings.TrimPrefix(p.currentVersion, "v"), strings.TrimPrefix(latest.Tag, "v")) <= 0 {
 		color.Green("You already have the latest version %s.", p.currentVersion)
-		return nil
-	}
-
-	if compareVersions(strings.TrimPrefix(latest.Tag, "v"), "0.23.0") <= 0 {
-		color.Green("%s contains breaking changes and cannot be updated directly from v0.22.x. Please check the releases CHANGELOG for more details.", latest.Tag)
 		return nil
 	}
 

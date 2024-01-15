@@ -3,10 +3,10 @@ package tokens
 import (
 	"errors"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/security"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/tools/security"
 )
 
 // NewRecordAuthToken generates and returns a new auth record authentication token.
@@ -20,6 +20,9 @@ func NewRecordAuthToken(app core.App, record *models.Record) (string, error) {
 			"id":           record.Id,
 			"type":         TypeAuthRecord,
 			"collectionId": record.Collection().Id,
+			// !CHANGED: add verified and verified add fields
+			"verified":    record.GetBool("verified"),
+			"verified_at": record.GetDateTime("verified_at"),
 		},
 		(record.TokenKey() + app.Settings().RecordAuthToken.Secret),
 		app.Settings().RecordAuthToken.Duration,

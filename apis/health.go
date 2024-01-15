@@ -3,8 +3,8 @@ package apis
 import (
 	"net/http"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
 	"github.com/labstack/echo/v5"
-	"github.com/pocketbase/pocketbase/core"
 )
 
 // bindHealthApi registers the health api endpoint.

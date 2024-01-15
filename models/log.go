@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/pocketbase/pocketbase/tools/types"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 )
 
 var _ Model = (*Log)(nil)

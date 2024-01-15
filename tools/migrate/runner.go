@@ -203,8 +203,9 @@ func (r *Runner) Down(toRevertCount int) ([]string, error) {
 }
 
 func (r *Runner) createMigrationsTable() error {
+	// !CHANGED: replace applied column from int to TIMESTAMPTZ
 	rawQuery := fmt.Sprintf(
-		"CREATE TABLE IF NOT EXISTS %v (file VARCHAR(255) PRIMARY KEY NOT NULL, applied INTEGER NOT NULL)",
+		"CREATE TABLE IF NOT EXISTS %v (file VARCHAR(255) PRIMARY KEY NOT NULL, applied TIMESTAMPTZ NOT NULL)",
 		r.db.QuoteTableName(r.tableName),
 	)
 
@@ -227,8 +228,9 @@ func (r *Runner) isMigrationApplied(tx dbx.Builder, file string) bool {
 
 func (r *Runner) saveAppliedMigration(tx dbx.Builder, file string) error {
 	_, err := tx.Insert(r.tableName, dbx.Params{
-		"file":    file,
-		"applied": time.Now().UnixMicro(),
+		"file": file,
+		// !CHANGED: use time.Now() for timestamptz
+		"applied": time.Now(),
 	}).Execute()
 
 	return err

@@ -7,14 +7,14 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/models/schema"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/inflector"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/list"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/security"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/tokenizer"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/models/schema"
-	"github.com/pocketbase/pocketbase/tools/inflector"
-	"github.com/pocketbase/pocketbase/tools/list"
-	"github.com/pocketbase/pocketbase/tools/security"
-	"github.com/pocketbase/pocketbase/tools/tokenizer"
-	"github.com/pocketbase/pocketbase/tools/types"
 )
 
 // DeleteView drops the specified view name.

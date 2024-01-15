@@ -7,11 +7,11 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/filesystem"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/list"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
-	"github.com/pocketbase/pocketbase/tools/filesystem"
-	"github.com/pocketbase/pocketbase/tools/list"
-	"github.com/pocketbase/pocketbase/tools/types"
 	"github.com/spf13/cast"
 )
 
@@ -201,7 +201,8 @@ func (f SchemaField) Validate() error {
 
 	excludeNames := BaseModelFieldNames()
 	// exclude special filter literals
-	excludeNames = append(excludeNames, "null", "true", "false", "_rowid_")
+	// !CHANGED: Change rowid to ctid to avoid postgress conflict
+	excludeNames = append(excludeNames, "null", "true", "false", "_ctid_")
 	// exclude system literals
 	excludeNames = append(excludeNames, SystemFieldNames()...)
 

@@ -1,0 +1,12 @@
+{
+    "name": "base",
+    "version": "0.0.1",
+    "scripts": {
+        "download": "go mod download && go mod tidy",
+        "ui:build": "pnpm --filter admin build",
+        "serve": "go run -tags pq ./examples/base serve",
+        "build": "GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -tags pq ./examples/base",
+        "test": "go test ./..."
+    },
+    "private": true
+  }

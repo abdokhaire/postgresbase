@@ -3,8 +3,8 @@ package security_test
 import (
 	"testing"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/security"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/pocketbase/pocketbase/tools/security"
 )
 
 func TestParseUnverifiedJWT(t *testing.T) {

@@ -13,20 +13,20 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/models/settings"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/filesystem"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/hook"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/logger"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/mailer"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/routine"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/security"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/store"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/subscriptions"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 	"github.com/fatih/color"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/daos"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/models/settings"
-	"github.com/pocketbase/pocketbase/tools/filesystem"
-	"github.com/pocketbase/pocketbase/tools/hook"
-	"github.com/pocketbase/pocketbase/tools/logger"
-	"github.com/pocketbase/pocketbase/tools/mailer"
-	"github.com/pocketbase/pocketbase/tools/routine"
-	"github.com/pocketbase/pocketbase/tools/security"
-	"github.com/pocketbase/pocketbase/tools/store"
-	"github.com/pocketbase/pocketbase/tools/subscriptions"
-	"github.com/pocketbase/pocketbase/tools/types"
 	"github.com/spf13/cast"
 )
 
@@ -1244,7 +1244,8 @@ func (app *BaseApp) initLogger() error {
 				for _, l := range logs {
 					model.MarkAsNew()
 					// note: using pseudorandom for a slightly better performance
-					model.Id = security.PseudorandomStringWithAlphabet(models.DefaultIdLength, models.DefaultIdAlphabet)
+					// !CHANGED: id changed to snowflake
+					model.Id = security.RandomSnowflakeId()
 					model.Level = int(l.Level)
 					model.Message = l.Message
 					model.Data = l.Data

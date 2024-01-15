@@ -5,12 +5,12 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/models/schema"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/dbutils"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/security"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/models/schema"
-	"github.com/pocketbase/pocketbase/tools/dbutils"
-	"github.com/pocketbase/pocketbase/tools/security"
 )
 
 // SyncRecordTableSchema compares the two provided collections
@@ -23,9 +23,11 @@ func (dao *Dao) SyncRecordTableSchema(newCollection *models.Collection, oldColle
 		// -----------------------------------------------------------
 		if oldCollection == nil {
 			cols := map[string]string{
-				schema.FieldNameId:      "TEXT PRIMARY KEY DEFAULT ('r'||lower(hex(randomblob(7)))) NOT NULL",
-				schema.FieldNameCreated: "TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%fZ')) NOT NULL",
-				schema.FieldNameUpdated: "TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%fZ')) NOT NULL",
+				// !CHANGED: postgres snowflakeid and timestamptz support
+				// example: r0a1b2c3d4e5f6 or r0a1b2c3d4e5f6g
+				schema.FieldNameId:      "VARCHAR(32) PRIMARY KEY DEFAULT generate_snowflake() NOT NULL",
+				schema.FieldNameCreated: "TIMESTAMPTZ DEFAULT NOW() NOT NULL",
+				schema.FieldNameUpdated: "TIMESTAMPTZ DEFAULT NOW() NOT NULL",
 			}
 
 			if newCollection.IsAuth() {
@@ -169,14 +171,8 @@ func (dao *Dao) normalizeSingleVsMultipleFieldChanges(newCollection, oldCollecti
 	}
 
 	return dao.RunInTransaction(func(txDao *Dao) error {
-		// temporary disable the schema error checks to prevent view and trigger errors
-		// when "altering" (aka. deleting and recreating) the non-normalized columns
-		if _, err := txDao.DB().NewQuery("PRAGMA writable_schema = ON").Execute(); err != nil {
-			return err
-		}
-		// executed with defer to make sure that the pragma is always reverted
-		// in case of an error and when nested transactions are used
-		defer txDao.DB().NewQuery("PRAGMA writable_schema = RESET").Execute()
+		// !CHANGED: sqlite transaction pragmas removed
+		// No equivalent pragma in PostgreSQL, so no changes needed.
 
 		for _, newField := range newCollection.Schema.Fields() {
 			// allow to continue even if there is no old field for the cases
@@ -217,15 +213,15 @@ func (dao *Dao) normalizeSingleVsMultipleFieldChanges(newCollection, oldCollecti
 			if !isOldMultiple && isNewMultiple {
 				// single -> multiple (convert to array)
 				copyQuery = txDao.DB().NewQuery(fmt.Sprintf(
-					`UPDATE {{%s}} set [[%s]] = (
+					`UPDATE "%s" set "%s" = (
 							CASE
-								WHEN COALESCE([[%s]], '') = ''
+								WHEN coalesce("%s"::text, '[]') = ''
 								THEN '[]'
 								ELSE (
 									CASE
-										WHEN json_valid([[%s]]) AND json_type([[%s]]) == 'array'
-										THEN [[%s]]
-										ELSE json_array([[%s]])
+										WHEN json_valid("%s"::text) AND json_typeof("%s"::json) = 'array'
+										THEN "%s"::json
+										ELSE json_build_array("%s")
 									END
 								)
 							END
@@ -244,15 +240,15 @@ func (dao *Dao) normalizeSingleVsMultipleFieldChanges(newCollection, oldCollecti
 				// note: for file fields the actual file objects are not
 				// deleted allowing additional custom handling via migration
 				copyQuery = txDao.DB().NewQuery(fmt.Sprintf(
-					`UPDATE {{%s}} set [[%s]] = (
+					`UPDATE "%s" set "%s" = (
 						CASE
-							WHEN COALESCE([[%s]], '[]') = '[]'
+							WHEN COALESCE("%s"::text, '[]') = '[]'
 							THEN ''
 							ELSE (
 								CASE
-									WHEN json_valid([[%s]]) AND json_type([[%s]]) == 'array'
-									THEN COALESCE(json_extract([[%s]], '$[#-1]'), '')
-									ELSE [[%s]]
+									WHEN json_valid("%s"::text) AND json_typeof("%s"::json) = 'array'
+									THEN COALESCE("%s"->>-1,'')::text
+                    				ELSE "%s"::text
 								END
 							)
 						END
@@ -283,10 +279,8 @@ func (dao *Dao) normalizeSingleVsMultipleFieldChanges(newCollection, oldCollecti
 			}
 		}
 
-		// revert the pragma and reload the schema
-		_, revertErr := txDao.DB().NewQuery("PRAGMA writable_schema = RESET").Execute()
-
-		return revertErr
+		// !CHANGED: sqlite transaction pragmas removed
+		return nil
 	})
 }
 

@@ -3,10 +3,10 @@ package migrations
 import (
 	"fmt"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/models/schema"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/daos"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/models/schema"
 )
 
 // Normalizes old single and multiple values of MultiValuer fields (file, select, relation).
@@ -39,7 +39,7 @@ func normalizeMultivaluerFields(db dbx.Builder) error {
 			}
 
 			var updateQuery *dbx.Query
-
+			// !CHANGED: We write json functions for postgres in migration files to support json equivalent operations from Pocketbase.
 			if opt.IsMultiple() {
 				updateQuery = dao.DB().NewQuery(fmt.Sprintf(
 					`UPDATE {{%s}} set [[%s]] = (
@@ -48,9 +48,9 @@ func normalizeMultivaluerFields(db dbx.Builder) error {
 							THEN '[]'
 							ELSE (
 								CASE
-									WHEN json_valid([[%s]]) AND json_type([[%s]]) == 'array'
-									THEN [[%s]]
-									ELSE json_array([[%s]])
+								WHEN json_valid([[%s]]) = true AND json_array_length([[%s]]::json) > 0
+								THEN [[%s]]
+								ELSE jsonb_build_array([[%s]])
 								END
 							)
 						END
@@ -65,14 +65,15 @@ func normalizeMultivaluerFields(db dbx.Builder) error {
 				))
 			} else {
 				updateQuery = dao.DB().NewQuery(fmt.Sprintf(
-					`UPDATE {{%s}} set [[%s]] = (
+					// !CHANGED: set-returning functions are not allowed in UPDATE at character
+					`UPDATE {{%s}} SET [[%s]] = (
 						CASE
 							WHEN COALESCE([[%s]], '[]') = '[]'
 							THEN ''
 							ELSE (
 								CASE
-									WHEN json_valid([[%s]]) AND json_type([[%s]]) == 'array'
-									THEN COALESCE(json_extract([[%s]], '$[#-1]'), '')
+								WHEN json_valid([[%s]]) = true AND json_array_length([[%s]]::json) > 0
+									THEN (SELECT COALESCE([[%s]]::json->>0, '')::text)
 									ELSE [[%s]]
 								END
 							)

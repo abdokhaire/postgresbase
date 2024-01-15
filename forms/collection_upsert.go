@@ -7,17 +7,17 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
+	"github.com/AlperRehaYAZGAN/postgresbase/forms/validators"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/models/schema"
+	"github.com/AlperRehaYAZGAN/postgresbase/resolvers"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/dbutils"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/list"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/search"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/daos"
-	"github.com/pocketbase/pocketbase/forms/validators"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/models/schema"
-	"github.com/pocketbase/pocketbase/resolvers"
-	"github.com/pocketbase/pocketbase/tools/dbutils"
-	"github.com/pocketbase/pocketbase/tools/list"
-	"github.com/pocketbase/pocketbase/tools/search"
-	"github.com/pocketbase/pocketbase/tools/types"
 )
 
 var collectionNameRegex = regexp.MustCompile(`^[a-zA-Z0-9][a-zA-Z0-9_]*$`)
@@ -106,7 +106,8 @@ func (form *CollectionUpsert) Validate() error {
 			&form.Id,
 			validation.When(
 				form.collection.IsNew(),
-				validation.Length(models.DefaultIdLength, models.DefaultIdLength),
+				// !CHANGED: replace default id validations to Snowflak
+				validation.Length(models.SnowflakeMinLen, models.SnowflakeMaxLen),
 				validation.Match(idRegex),
 				validation.By(validators.UniqueId(form.dao, form.collection.TableName())),
 			).Else(validation.In(form.collection.Id)),

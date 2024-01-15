@@ -5,13 +5,13 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/models/schema"
+	"github.com/AlperRehaYAZGAN/postgresbase/models/settings"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/migrate"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/daos"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/models/schema"
-	"github.com/pocketbase/pocketbase/models/settings"
-	"github.com/pocketbase/pocketbase/tools/migrate"
-	"github.com/pocketbase/pocketbase/tools/types"
 )
 
 var AppMigrations migrate.MigrationsList
@@ -34,52 +34,86 @@ func Register(
 }
 
 func init() {
+	// !CHANGED: We write json functions for postgres in migration files to support json equivalent operations from Pocketbase.
 	AppMigrations.Register(func(db dbx.Builder) error {
 		_, tablesErr := db.NewQuery(`
+			create or replace function json_valid(p_json text) returns boolean as $$
+			begin
+				return (p_json::json is not null);
+				exception when others then return false;  
+			end;
+			$$ language plpgsql immutable;
+
+			CREATE OR REPLACE FUNCTION json_extract(json_data json, key text)
+			RETURNS text AS $$
+			BEGIN
+				RETURN json_data ->> key;
+			END;
+			$$ LANGUAGE plpgsql;
+
+			CREATE SEQUENCE IF NOT EXISTS global_id_seq;
+			CREATE OR REPLACE FUNCTION generate_snowflake(OUT result text) AS $$
+			DECLARE
+				our_epoch bigint := 1314220021721;
+				seq_id bigint;
+				now_millis bigint;
+				shard_id int := 5;
+				resultint bigint;
+			BEGIN
+				SELECT nextval('global_id_seq')::bigint % 1024 INTO seq_id;
+				SELECT FLOOR(EXTRACT(EPOCH FROM clock_timestamp()) * 1000) INTO now_millis;
+				resultint := (now_millis - our_epoch) << 23;
+				resultint := resultint | (shard_id <<10);
+				resultint := resultint | (seq_id);
+				-- convert result from bigint to text
+				result := resultint::text;
+			END;
+				$$ LANGUAGE PLPGSQL;
+
 			CREATE TABLE {{_admins}} (
-				[[id]]              TEXT PRIMARY KEY NOT NULL,
+				[[id]]        		VARCHAR(32) PRIMARY KEY DEFAULT generate_snowflake() NOT NULL,
 				[[avatar]]          INTEGER DEFAULT 0 NOT NULL,
 				[[email]]           TEXT UNIQUE NOT NULL,
 				[[tokenKey]]        TEXT UNIQUE NOT NULL,
 				[[passwordHash]]    TEXT NOT NULL,
-				[[lastResetSentAt]] TEXT DEFAULT "" NOT NULL,
-				[[created]]         TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%fZ')) NOT NULL,
-				[[updated]]         TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%fZ')) NOT NULL
+				[[lastResetSentAt]] TEXT DEFAULT '' NOT NULL,
+				[[created]]         TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+				[[updated]]         TIMESTAMPTZ DEFAULT NOW() NOT NULL
 			);
 
 			CREATE TABLE {{_collections}} (
-				[[id]]         TEXT PRIMARY KEY NOT NULL,
+				[[id]]		   VARCHAR(32) PRIMARY KEY DEFAULT generate_snowflake() NOT NULL,
 				[[system]]     BOOLEAN DEFAULT FALSE NOT NULL,
-				[[type]]       TEXT DEFAULT "base" NOT NULL,
+				[[type]]       TEXT DEFAULT 'base' NOT NULL,
 				[[name]]       TEXT UNIQUE NOT NULL,
-				[[schema]]     JSON DEFAULT "[]" NOT NULL,
-				[[indexes]]    JSON DEFAULT "[]" NOT NULL,
+				[[schema]]     JSON DEFAULT '[]' NOT NULL,
+				[[indexes]]    JSON DEFAULT '[]' NOT NULL,
 				[[listRule]]   TEXT DEFAULT NULL,
 				[[viewRule]]   TEXT DEFAULT NULL,
 				[[createRule]] TEXT DEFAULT NULL,
 				[[updateRule]] TEXT DEFAULT NULL,
 				[[deleteRule]] TEXT DEFAULT NULL,
-				[[options]]    JSON DEFAULT "{}" NOT NULL,
-				[[created]]    TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%fZ')) NOT NULL,
-				[[updated]]    TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%fZ')) NOT NULL
+				[[options]]    JSON DEFAULT '{}' NOT NULL,
+				[[created]]    TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+				[[updated]]    TIMESTAMPTZ DEFAULT NOW() NOT NULL
 			);
 
 			CREATE TABLE {{_params}} (
-				[[id]]      TEXT PRIMARY KEY NOT NULL,
+				[[id]]      VARCHAR(32) PRIMARY KEY DEFAULT generate_snowflake() NOT NULL,
 				[[key]]     TEXT UNIQUE NOT NULL,
 				[[value]]   JSON DEFAULT NULL,
-				[[created]] TEXT DEFAULT "" NOT NULL,
-				[[updated]] TEXT DEFAULT "" NOT NULL
+				[[created]] TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+				[[updated]] TIMESTAMPTZ DEFAULT NOW() NOT NULL
 			);
 
 			CREATE TABLE {{_externalAuths}} (
-				[[id]]           TEXT PRIMARY KEY NOT NULL,
+				[[id]]           VARCHAR(32) PRIMARY KEY DEFAULT generate_snowflake() NOT NULL,
 				[[collectionId]] TEXT NOT NULL,
 				[[recordId]]     TEXT NOT NULL,
 				[[provider]]     TEXT NOT NULL,
 				[[providerId]]   TEXT NOT NULL,
-				[[created]]      TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%fZ')) NOT NULL,
-				[[updated]]      TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%fZ')) NOT NULL,
+				[[created]]      TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+				[[updated]]      TIMESTAMPTZ DEFAULT NOW() NOT NULL,
 				---
 				FOREIGN KEY ([[collectionId]]) REFERENCES {{_collections}} ([[id]]) ON UPDATE CASCADE ON DELETE CASCADE
 			);

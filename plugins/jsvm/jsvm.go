@@ -21,6 +21,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
+	m "github.com/AlperRehaYAZGAN/postgresbase/migrations"
+	"github.com/AlperRehaYAZGAN/postgresbase/plugins/jsvm/internal/types/generated"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/template"
 	"github.com/dop251/goja"
 	"github.com/dop251/goja_nodejs/console"
 	"github.com/dop251/goja_nodejs/process"
@@ -29,10 +33,6 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/core"
-	m "github.com/pocketbase/pocketbase/migrations"
-	"github.com/pocketbase/pocketbase/plugins/jsvm/internal/types/generated"
-	"github.com/pocketbase/pocketbase/tools/template"
 )
 
 const (
@@ -224,7 +224,7 @@ func (p *plugin) registerHooks() error {
 	// initialize the hooks dir watcher
 	if p.config.HooksWatch {
 		if err := p.watchHooks(); err != nil {
-			color.Yellow("Unable to init hooks watcher: %v", err)
+			return err
 		}
 	}
 
@@ -344,21 +344,11 @@ func (p *plugin) normalizeServeExceptions(oldErrorHandler echo.HTTPErrorHandler)
 //
 // This method does nothing if the hooks directory is missing.
 func (p *plugin) watchHooks() error {
-	watchDir := p.config.HooksDir
-
-	hooksDirInfo, err := os.Lstat(p.config.HooksDir)
-	if err != nil {
+	if _, err := os.Stat(p.config.HooksDir); err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
 			return nil // no hooks dir to watch
 		}
 		return err
-	}
-
-	if hooksDirInfo.Mode()&os.ModeSymlink == os.ModeSymlink {
-		watchDir, err = filepath.EvalSymlinks(p.config.HooksDir)
-		if err != nil {
-			return fmt.Errorf("failed to resolve hooksDir symlink: %w", err)
-		}
 	}
 
 	watcher, err := fsnotify.NewWatcher()
@@ -419,9 +409,9 @@ func (p *plugin) watchHooks() error {
 	// add directories to watch
 	//
 	// @todo replace once recursive watcher is added (https://github.com/fsnotify/fsnotify/issues/18)
-	dirsErr := filepath.WalkDir(watchDir, func(path string, entry fs.DirEntry, err error) error {
-		// ignore hidden directories, node_modules, symlinks, sockets, etc.
-		if !entry.IsDir() || entry.Name() == "node_modules" || strings.HasPrefix(entry.Name(), ".") {
+	dirsErr := filepath.Walk(p.config.HooksDir, func(path string, info fs.FileInfo, err error) error {
+		// ignore hidden directories and node_modules
+		if !info.IsDir() || info.Name() == "node_modules" || strings.HasPrefix(info.Name(), ".") {
 			return nil
 		}
 

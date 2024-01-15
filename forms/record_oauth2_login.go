@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/auth"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/security"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/daos"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/tools/auth"
-	"github.com/pocketbase/pocketbase/tools/security"
 	"golang.org/x/oauth2"
 )
 
@@ -127,10 +127,6 @@ func (form *RecordOAuth2Login) Submit(
 	provider, err := auth.NewProviderByName(form.Provider)
 	if err != nil {
 		return nil, nil, err
-	}
-
-	if form.Provider == auth.NameInstagram {
-		form.app.Logger().Warn("Instagram OAuth2 provider is deprecated and will stop working after December 4th. For more details please check https://github.com/pocketbase/pocketbase/discussions/5652.")
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)

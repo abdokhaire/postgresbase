@@ -10,16 +10,16 @@ import (
 	"testing"
 	"time"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
+	"github.com/AlperRehaYAZGAN/postgresbase/migrations"
+	"github.com/AlperRehaYAZGAN/postgresbase/migrations/logs"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/list"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/logger"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/mailer"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/migrate"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/daos"
-	"github.com/pocketbase/pocketbase/migrations"
-	"github.com/pocketbase/pocketbase/migrations/logs"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/tools/list"
-	"github.com/pocketbase/pocketbase/tools/logger"
-	"github.com/pocketbase/pocketbase/tools/mailer"
-	"github.com/pocketbase/pocketbase/tools/migrate"
-	"github.com/pocketbase/pocketbase/tools/types"
 )
 
 func TestNewBaseApp(t *testing.T) {

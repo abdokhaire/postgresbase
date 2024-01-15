@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/pocketbase/pocketbase/tools/types"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/spotify"
 )

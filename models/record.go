@@ -4,16 +4,17 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"regexp"
 	"strconv"
 	"time"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/models/schema"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/list"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/security"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/store"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/models/schema"
-	"github.com/pocketbase/pocketbase/tools/list"
-	"github.com/pocketbase/pocketbase/tools/security"
-	"github.com/pocketbase/pocketbase/tools/store"
-	"github.com/pocketbase/pocketbase/tools/types"
 	"github.com/spf13/cast"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -948,8 +949,20 @@ func (m *Record) SetPassword(password string) error {
 		return errors.New("The provided plain password is empty")
 	}
 
+	// !CHANGED: bcrypt salt amount is increased from 10 to 12 (old ersion: 10). Get it from env var
+	// get cost from env
+	cost := 12
+	costArg := os.Getenv("BCRYPT_COST")
+	if costArg != "" {
+		costAi, err := strconv.Atoi(costArg)
+		if err != nil {
+			return errors.New("The provided BCRYPT_COST is not a valid number")
+		}
+		cost = costAi
+	}
+
 	// hash the password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 12)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), cost)
 	if err != nil {
 		return err
 	}

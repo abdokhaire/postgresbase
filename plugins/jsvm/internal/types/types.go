@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/plugins/jsvm"
-	"github.com/pocketbase/pocketbase/tools/list"
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
+	"github.com/AlperRehaYAZGAN/postgresbase/plugins/jsvm"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/list"
 	"github.com/pocketbase/tygoja"
 )
 
@@ -194,34 +194,22 @@ declare var $app: PocketBase
 declare var $template: template.Registry
 
 /**
- * This method is superseded by toString.
+ * readerToString reads the content of the specified io.Reader until
+ * EOF or maxBytes are reached.
  *
- * @deprecated
- * @group PocketBase
- */
-declare function readerToString(reader: any, maxBytes?: number): string;
-
-/**
- * toString stringifies the specified value.
+ * If maxBytes is not specified it will read up to 32MB.
  *
- * Support optional second maxBytes argument to limit the max read bytes
- * when the value is a io.Reader (default to 32MB).
- *
- * Types that don't have explicit string representation are json serialized.
+ * Note that after this call the reader can't be used anymore.
  *
  * Example:
  *
  * ` + "```" + `js
- * // io.Reader
- * const ex1 = toString(e.request.body)
- *
- * // slice of bytes ("hello")
- * const ex2 = toString([104 101 108 108 111])
+ * const rawBody = readerToString(c.request().body)
  * ` + "```" + `
  *
  * @group PocketBase
  */
-declare function toString(val: any, maxBytes?: number): string;
+declare function readerToString(reader: any, maxBytes?: number): string;
 
 /**
  * sleep pauses the current goroutine for at least the specified user duration (in ms).
@@ -725,7 +713,7 @@ declare namespace $os {
    * const cmd = $os.cmd('ls', '-sl')
    *
    * // execute the command and return its standard output as string
-   * const output = toString(cmd.output());
+   * const output = String.fromCharCode(...cmd.output());
    * ` + "```" + `
    */
   export let cmd: exec.command
@@ -1089,20 +1077,20 @@ func main() {
 
 	gen := tygoja.New(tygoja.Config{
 		Packages: map[string][]string{
-			"github.com/labstack/echo/v5/middleware":            {"Gzip", "BodyLimit"},
-			"github.com/go-ozzo/ozzo-validation/v4":             {"Error"},
-			"github.com/pocketbase/dbx":                         {"*"},
-			"github.com/pocketbase/pocketbase/tools/security":   {"*"},
-			"github.com/pocketbase/pocketbase/tools/filesystem": {"*"},
-			"github.com/pocketbase/pocketbase/tools/template":   {"*"},
-			"github.com/pocketbase/pocketbase/tokens":           {"*"},
-			"github.com/pocketbase/pocketbase/mails":            {"*"},
-			"github.com/pocketbase/pocketbase/apis":             {"*"},
-			"github.com/pocketbase/pocketbase/forms":            {"*"},
-			"github.com/pocketbase/pocketbase":                  {"*"},
-			"path/filepath":                                     {"*"},
-			"os":                                                {"*"},
-			"os/exec":                                           {"Command"},
+			"github.com/labstack/echo/v5/middleware":                   {"Gzip", "BodyLimit"},
+			"github.com/go-ozzo/ozzo-validation/v4":                    {"Error"},
+			"github.com/pocketbase/dbx":                                {"*"},
+			"github.com/AlperRehaYAZGAN/postgresbase/tools/security":   {"*"},
+			"github.com/AlperRehaYAZGAN/postgresbase/tools/filesystem": {"*"},
+			"github.com/AlperRehaYAZGAN/postgresbase/tools/template":   {"*"},
+			"github.com/AlperRehaYAZGAN/postgresbase/tokens":           {"*"},
+			"github.com/AlperRehaYAZGAN/postgresbase/mails":            {"*"},
+			"github.com/AlperRehaYAZGAN/postgresbase/apis":             {"*"},
+			"github.com/AlperRehaYAZGAN/postgresbase/forms":            {"*"},
+			"github.com/AlperRehaYAZGAN/postgresbase":                  {"*"},
+			"path/filepath": {"*"},
+			"os":            {"*"},
+			"os/exec":       {"Command"},
 		},
 		FieldNameFormatter: func(s string) string {
 			return mapper.FieldName(nil, reflect.StructField{Name: s})

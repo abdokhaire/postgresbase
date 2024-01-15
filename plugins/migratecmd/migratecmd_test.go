@@ -7,12 +7,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/pocketbase/pocketbase/daos"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/models/schema"
-	"github.com/pocketbase/pocketbase/plugins/migratecmd"
-	"github.com/pocketbase/pocketbase/tests"
-	"github.com/pocketbase/pocketbase/tools/types"
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/models/schema"
+	"github.com/AlperRehaYAZGAN/postgresbase/plugins/migratecmd"
+	"github.com/AlperRehaYAZGAN/postgresbase/tests"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 )
 
 func TestAutomigrateCollectionCreate(t *testing.T) {
@@ -72,9 +72,9 @@ import (
 	"encoding/json"
 
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/daos"
-	m "github.com/pocketbase/pocketbase/migrations"
-	"github.com/pocketbase/pocketbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
+	m "github.com/AlperRehaYAZGAN/postgresbase/migrations"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
 )
 
 func init() {
@@ -249,9 +249,9 @@ import (
 	"encoding/json"
 
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/daos"
-	m "github.com/pocketbase/pocketbase/migrations"
-	"github.com/pocketbase/pocketbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
+	m "github.com/AlperRehaYAZGAN/postgresbase/migrations"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
 )
 
 func init() {
@@ -504,10 +504,10 @@ import (
 	"encoding/json"
 
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/daos"
-	m "github.com/pocketbase/pocketbase/migrations"
-	"github.com/pocketbase/pocketbase/models/schema"
-	"github.com/pocketbase/pocketbase/tools/types"
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
+	m "github.com/AlperRehaYAZGAN/postgresbase/migrations"
+	"github.com/AlperRehaYAZGAN/postgresbase/models/schema"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 )
 
 func init() {

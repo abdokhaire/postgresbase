@@ -19,6 +19,9 @@ builds:
       - linux
     goarch:
       - amd64
+    tags:
+      - pq
+      - sqlite
 
   - id: build_noncgo
     main: ./examples/base
@@ -35,6 +38,9 @@ builds:
       - amd64
       - arm64
       - arm
+    tags:
+      - pq
+      - sqlite
     goarm:
       - 7
     ignore:

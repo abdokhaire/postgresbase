@@ -2,13 +2,16 @@
 package models
 
 import (
-	"github.com/pocketbase/pocketbase/tools/security"
-	"github.com/pocketbase/pocketbase/tools/types"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/security"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/types"
 )
 
 const (
 	// DefaultIdLength is the default length of the generated model id.
 	DefaultIdLength = 15
+	// !CHANGED: add Snowflak Min Max values
+	SnowflakeMinLen = 8
+	SnowflakeMaxLen = 32
 
 	// DefaultIdAlphabet is the default characters set used for generating the model id.
 	DefaultIdAlphabet = "abcdefghijklmnopqrstuvwxyz0123456789"
@@ -100,7 +103,8 @@ func (m *BaseModel) GetUpdated() types.DateTime {
 //
 // The generated id is a cryptographically random 15 characters length string.
 func (m *BaseModel) RefreshId() {
-	m.Id = security.RandomStringWithAlphabet(DefaultIdLength, DefaultIdAlphabet)
+	// !CHANGED: use the SnowflakId
+	m.Id = security.RandomSnowflakeId()
 }
 
 // RefreshCreated updates the model Created field with the current datetime.

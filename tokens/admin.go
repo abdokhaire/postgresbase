@@ -1,10 +1,10 @@
 package tokens
 
 import (
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/security"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/tools/security"
 )
 
 // NewAdminAuthToken generates and returns a new admin authentication token.

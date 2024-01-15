@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/list"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/tools/list"
 	_ "modernc.org/sqlite"
 )
 
@@ -34,7 +34,7 @@ func TestNewRunner(t *testing.T) {
 	}
 
 	expectedQueries := []string{
-		"CREATE TABLE IF NOT EXISTS `_migrations` (file VARCHAR(255) PRIMARY KEY NOT NULL, applied INTEGER NOT NULL)",
+		"CREATE TABLE IF NOT EXISTS `_migrations` (file VARCHAR(255) PRIMARY KEY NOT NULL, applied TIMESTAMPTZ NOT NULL)",
 	}
 	if len(expectedQueries) != len(testDB.CalledQueries) {
 		t.Fatalf("Expected %d queries, got %d: \n%v", len(expectedQueries), len(testDB.CalledQueries), testDB.CalledQueries)

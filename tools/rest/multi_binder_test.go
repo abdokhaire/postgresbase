@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/rest"
 	"github.com/labstack/echo/v5"
-	"github.com/pocketbase/pocketbase/tools/rest"
 )
 
 func TestMultiBinderBind(t *testing.T) {

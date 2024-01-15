@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"errors"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/daos"
 )
 
 // UniqueId checks whether the provided model id already exists.

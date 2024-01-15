@@ -11,15 +11,15 @@ import (
 	"sync"
 	"time"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
+	"github.com/AlperRehaYAZGAN/postgresbase/migrations"
+	"github.com/AlperRehaYAZGAN/postgresbase/migrations/logs"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/list"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/migrate"
 	"github.com/fatih/color"
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/migrations"
-	"github.com/pocketbase/pocketbase/migrations/logs"
-	"github.com/pocketbase/pocketbase/tools/list"
-	"github.com/pocketbase/pocketbase/tools/migrate"
 	"golang.org/x/crypto/acme"
 	"golang.org/x/crypto/acme/autocert"
 )
@@ -159,7 +159,6 @@ func Serve(app core.App, config ServeConfig) (*http.Server, error) {
 		BaseContext: func(l net.Listener) context.Context {
 			return baseCtx
 		},
-		ErrorLog: log.New(&serverErrorLogWriter{app: app}, "", 0),
 	}
 
 	serveEvent := &core.ServeEvent{
@@ -275,14 +274,4 @@ func runMigrations(app core.App) error {
 	}
 
 	return nil
-}
-
-type serverErrorLogWriter struct {
-	app core.App
-}
-
-func (s *serverErrorLogWriter) Write(p []byte) (int, error) {
-	s.app.Logger().Debug(strings.TrimSpace(string(p)))
-
-	return len(p), nil
 }

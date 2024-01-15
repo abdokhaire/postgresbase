@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/security"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/store"
 	"github.com/ganigeorgiev/fexpr"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/tools/security"
-	"github.com/pocketbase/pocketbase/tools/store"
 	"github.com/spf13/cast"
 )
 
@@ -292,14 +292,17 @@ func resolveEqualExpr(equal bool, left, right *ResolverResult) dbx.Expression {
 	isRightEmpty := isEmptyIdentifier(right) || (len(right.Params) == 1 && hasEmptyParamValue(right))
 
 	equalOp := "="
-	nullEqualOp := "IS"
+	// !CHANGED: in sqlite is not works fine but in postgres should be as a operator !=
+	nullEqualOp := "="
 	concatOp := "OR"
 	nullExpr := "IS NULL"
 	if !equal {
 		// always use `IS NOT` instead of `!=` because direct non-equal comparisons
 		// to nullable column values that are actually NULL yields to NULL instead of TRUE, eg.:
 		// `'example' != nullableColumn` -> NULL even if nullableColumn row value is NULL
-		equalOp = "IS NOT"
+		// !CHANGED: in sqlite is not works fine but in postgres should be as a operator !=
+		// equalOp = "IS NOT"
+		equalOp = "!="
 		nullEqualOp = equalOp
 		concatOp = "AND"
 		nullExpr = "IS NOT NULL"

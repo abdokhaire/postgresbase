@@ -8,11 +8,11 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
+	"github.com/AlperRehaYAZGAN/postgresbase/daos"
+	"github.com/AlperRehaYAZGAN/postgresbase/models"
+	"github.com/AlperRehaYAZGAN/postgresbase/tools/migrate"
 	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/daos"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/tools/migrate"
 )
 
 const collectionsStoreKey = "migratecmd_collections"
@@ -71,7 +71,8 @@ func (p *plugin) afterCollectionChange() func(*core.ModelEvent) error {
 				"file": name,
 				// use microseconds for more granular applied time in case
 				// multiple collection changes happens at the ~exact time
-				"applied": time.Now().UnixMicro(),
+				// !CHANGED: remove UnixMicro
+				"applied": time.Now(),
 			}).Execute()
 			if err != nil {
 				return err

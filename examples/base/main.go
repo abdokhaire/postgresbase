@@ -7,12 +7,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pocketbase/pocketbase"
-	"github.com/pocketbase/pocketbase/apis"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/plugins/ghupdate"
-	"github.com/pocketbase/pocketbase/plugins/jsvm"
-	"github.com/pocketbase/pocketbase/plugins/migratecmd"
+	pocketbase "github.com/AlperRehaYAZGAN/postgresbase"
+	"github.com/AlperRehaYAZGAN/postgresbase/apis"
+	"github.com/AlperRehaYAZGAN/postgresbase/core"
+	"github.com/AlperRehaYAZGAN/postgresbase/plugins/ghupdate"
+	"github.com/AlperRehaYAZGAN/postgresbase/plugins/jsvm"
+	"github.com/AlperRehaYAZGAN/postgresbase/plugins/migratecmd"
 )
 
 func main() {
