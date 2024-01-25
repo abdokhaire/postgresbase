@@ -58,7 +58,7 @@ func main() {
 	app.RootCmd.PersistentFlags().BoolVar(
 		&automigrate,
 		"automigrate",
-		true,
+		false,
 		"enable/disable auto migrations",
 	)
 
