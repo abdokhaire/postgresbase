@@ -72,7 +72,12 @@ export DATABASE="postgresql://user:pass@localhost/postgres?sslmode=disable"
 export BCRYPT_COST=10 # default is 12
 
 # export is success you can run the project ✅
-go run -tags pq ./examples/base serve  
+
+# run the project with postgres connection info
+CGO_ENABLED=0 \
+LOGS_DATABASE="postgresql://user:pass@localhost/logs?sslmode=disable" \
+DATABASE="postgresql://user:pass@localhost/postgres?sslmode=disable" \
+    go run -tags pq ./examples/base serve  
 
 ```
 
