@@ -8,6 +8,7 @@ import (
 var LogsMigrations migrate.MigrationsList
 
 func init() {
+	// !CHANGED: We write json functions for postgres in migration files to support json equivalent operations from Pocketbase.
 	LogsMigrations.Register(func(db dbx.Builder) error {
 		_, err := db.NewQuery(`
 			CREATE OR REPLACE FUNCTION json_extract(json_data json, key text)
